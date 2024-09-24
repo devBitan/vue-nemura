@@ -14,14 +14,14 @@
           type="password",
           placeholder="your pasword -One capital letter, one number",
           v-model="userConfirm.password",
-          v-show="userConfirm.nickName != '' && userConfirm.nickName.length >= 5",
+          v-show="userConfirm.nickName != '' && userConfirm.nickName.length >= 4",
           @change="checkPassword",
       )
       input(
           type="password",
           placeholder="Repeat your password",
           v-model="passConfirm",
-          v-show="userConfirm.password != '' && userConfirm.password.length > 8",
+          v-show="userConfirm.password != '' && userConfirm.password.length >= 8",
           @change="ConfirmPass", 
       )
       div

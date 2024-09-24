@@ -31,7 +31,7 @@
     )
     input(
         type="password",
-        placeholder="your pasword",
+        placeholder="your pasword -One capital letter, one number",
         v-model="userCreate.password",
         v-show="userCreate.nickName != '' && userCreate.nickName.length >= 3",
         @change="checkPassword",
