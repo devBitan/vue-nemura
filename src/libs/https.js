@@ -24,38 +24,38 @@ export function httpService() {
     window.location = "/";
   }
 
-  // Interceptor de solicitudes
-  http.interceptors.request.use(
-    async (config) => {
-      const tokenAvailable = await hasToken();
-      if (!tokenAvailable) {
-        backLogin();
-        return Promise.reject("No token available");
-      }
+  // // Interceptor de solicitudes
+  // http.interceptors.request.use(
+  //   async (config) => {
+  //     const tokenAvailable = await hasToken();
+  //     if (!tokenAvailable) {
+  //       backLogin();
+  //       return Promise.reject("No token available");
+  //     }
 
-      // Obtener el token desde la store y agregarlo a los headers
-      const token = await getTokenFromStore();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
+  //     // Obtener el token desde la store y agregarlo a los headers
+  //     const token = await getTokenFromStore();
+  //     if (token) {
+  //       config.headers.Authorization = `Bearer ${token}`;
+  //     }
 
-      return config;
-    },
-    (error) => {
-      backLogin();
-      return Promise.reject(error);
-    }
-  );
+  //     return config;
+  //   },
+  //   (error) => {
+  //     backLogin();
+  //     return Promise.reject(error);
+  //   }
+  // );
 
-  // Interceptor de respuesta
-  http.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
+  // // Interceptor de respuesta
+  // http.interceptors.response.use(
+  //   (response) => {
+  //     return response;
+  //   },
+  //   (error) => {
+  //     return Promise.reject(error);
+  //   }
+  // );
 
   const httpGet = async (url) => {
     let response = await http.get(url);
