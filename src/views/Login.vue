@@ -3,7 +3,7 @@
 import Login from '@/components/Login.vue';
 import Register from '@/components/Register.vue';
 import Task from '@/components/Task.vue';
-// validar  para que se muestre el compoente de registro o el de login
+
 </script>
 
 <template>
@@ -19,7 +19,7 @@ import Task from '@/components/Task.vue';
   </main>
 </template>
 <!--  validar el loal stora si esta el toekn si no mandarlo al registro   mejor con un boton -->
-<style lang="scss">
+<style lang="scss" scoped>
 .login {
   width: 100vw;
   display: flex;
@@ -37,14 +37,16 @@ import Task from '@/components/Task.vue';
       max-width: 350px;
     }
   }
+
   @media (max-width: 768px) {
     flex-direction: column;
    .login-image {
-    width: 10vh;
-    height: 30vh;
+    width: 7vh;
+    height: 20vh;
+    border-radius: 1px;
     img {
-      max-width: 130px;
-      margin-left: 15rem;
+      max-width: 120px;
+      margin-left: 16rem;
     };
    }
   }

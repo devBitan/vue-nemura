@@ -8,10 +8,10 @@ import Task from '@/components/Task.vue';
 
 <template>
   <main class="login">
-    <Register />
+    <Register class="registerC" />
     <div class="login-image">
       <div>
-        <h1>Nemura</h1>
+        <h1>Nemura r</h1>
         <span>Simple - practical - efficient.</span>
       </div>
       <img src="../assets/img/logoNemura.png" alt="logo-Nemura">
@@ -19,7 +19,7 @@ import Task from '@/components/Task.vue';
   </main>
 </template>
 <!--  validar el loal stora si esta el toekn si no mandarlo al registro   mejor con un boton -->
-<style lang="scss">
+<style lang="scss" scoped>
 .login {
   width: 100vw;
   display: flex;
@@ -39,13 +39,19 @@ import Task from '@/components/Task.vue';
   }
   @media (max-width: 768px) {
     flex-direction: column;
+    padding-top: 2rem;
    .login-image {
-    width: 10vh;
-    height: 30vh;
-    img {
+     order: 2; /* Aparece segundo en pantallas pequeñas */
+     width: 10vh;
+     height: 20vh;
+     img {
       max-width: 130px;
-      margin-left: 15rem;
+      margin-left: 16rem;
     };
+   }
+ 
+   .registerC {
+     order: 1; /* Aparece primero en pantallas pequeñas */
    }
   }
 

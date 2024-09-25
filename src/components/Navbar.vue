@@ -11,9 +11,8 @@
 
         </div>
         <h3>Projects</h3>
-        <form action="" @submit.prevent="newProject(newProjectName)" @click="userStore.isExpanded = true" class="formProject">
+        <form  action="" @submit.prevent="newProject(newProjectName)" @click="userStore.isExpanded = true" class="formProject">
           <input class="inputProject" type="text" placeholder="New Project" v-model="newProjectName" >
-          <span class="material-icons">add_circle</span>
         </form>
         <div class="menu" v-for="project in projects" :key="project.name">
             <div class="button" @click="projectSelected(project.id, project.name)" >
@@ -116,13 +115,14 @@ async function projectDelete(projectId) {
 aside {
   display: flex;
   flex-direction: column;
-  width: calc(2rem + 32px);
+  width: calc(2rem + 36px);
   min-height: 100vh;
   overflow: hidden;
-  background-color: var(--color-blue);
+  background-color: #1b2a47; /* Un color oscuro para contraste */
   color: var(--color-white-soft);
   padding: 1rem;
   transition: 0.2s ease-out;
+  border-right: 3px solid rgba(255, 255, 255, 0.1);
 
   .flex{
     flex: 1 1 0;
@@ -197,12 +197,12 @@ aside {
       padding: 0 5px;
       border-radius: 9px;
       margin: 6px 0;
-      background-color: var(--color-blue);
+      background-color: #1b2a47; 
       color:white;
       &:hover {
           color: var(--color-naranja);
           transform:scale(1rem);
-          background-color: var(--color-azulito);
+          background-color: var(--color-blue);
 
       }
 

@@ -22,6 +22,7 @@ form(action="" @submit.prevent="handleSubmit")
   padding: 10px;
   border: none;
   border-radius: 10px;
+  min-width: 270px;
 }
   
 </style>

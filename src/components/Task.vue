@@ -117,7 +117,7 @@ function setPriority(priorityValue) {
   height: 120px;
   border-radius: 12px;
   padding: 12px;
-  margin: 2rem auto;
+  margin: 1.4rem auto;
   box-shadow: 0 0 10px rgba(210, 207, 207, 0.327);
   color: white;
   cursor: pointer;

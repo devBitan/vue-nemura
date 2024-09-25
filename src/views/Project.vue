@@ -2,7 +2,7 @@
   main.dashboard
     Navbar
     .dashboard-table
-      h3.title {{nameProject}}
+      h1.title {{nameProject}}
       .board-container
         div.board(@drop="onDrop($event, board)" @dragover.prevent @dragenter.prevent v-for="board in boards" :key="board.id")
           div {{ board.name }}
@@ -137,24 +137,27 @@ async function updateItem(id,updatedAssignment) {
 
 <style lang="scss" scoped>
 .dashboard-table {
-  width: 100%;
+  width: 100vw;
   text-align: center;
-
+  /* border: 5px solid tomato; */
+  min-height: 100vh;
+  padding: .5rem;
+  
   .board-container {
-    // border: 1px solid tomato;
+    /* border: 2px solid rgb(29, 10, 7); */
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 1rem;
     position: relative;
-    margin: 0 2.5rem;
+    margin: 0 2.6rem;
 
     .board {
       color: rgba(255, 255, 255, 0.893);
       // color: black;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.735);
-      width: 30%;
-      min-width: 300px;
+      width: 32%;
+      /* min-width: 300px; */
       min-height: 35vh;
       max-height: 85vh;
       height: 100%;
@@ -163,17 +166,23 @@ async function updateItem(id,updatedAssignment) {
       // background-color: #F2F3F5;
       padding: 1rem;
       font-size: 2rem;
-      overflow: auto;
+      overflow: auto !important;
     }
 
     @media (max-width: 768px) {
       margin: 0 0 0 4rem;
       justify-content: center;
+      /* background-color: red; */
+      .board {
+        max-width: 250px;
+        max-height: 350px;
+        min-width: 260px;
+      }
     }
   }
 }
 
 .title {
-  margin: 2vh;
+  margin: .5vh;
 }
 </style>
