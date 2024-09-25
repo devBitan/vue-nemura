@@ -104,6 +104,7 @@ const validate = async () => {
 
 <style lang="scss" scoped>
 .login-seccion {
+  padding: 3rem 0;
   width: 100vw;
   display: flex;
   align-items: center;

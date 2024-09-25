@@ -1,6 +1,19 @@
 <template>
-  <div class="task-container" @click="editSelectedAssignment(item)">
+  <!-- <div class="task-container" @click="editSelectedAssignment(item)">
     <p class="task-container-title">{{ item.name }}</p>
+    <div class="task-container-items">
+      <div class="task-container-items-id"> <span>id: </span> {{ item.id }}</div>
+      <div class="task-container-items-priority" :class="{
+        'priority-low': item.priority === 0,
+        'priority-medium': item.priority === 1,
+        'priority-high': item.priority === 2
+      }"> {{ priorityMapping[item?.priority] }}</div>
+    </div>
+  </div> -->
+  <div class="task-container" @click="editSelectedAssignment(item)">
+    <div class="task-container-title">
+      <span class="scroll-text">{{ item.name }}</span>
+    </div>
     <div class="task-container-items">
       <div class="task-container-items-id"> <span>id: </span> {{ item.id }}</div>
       <div class="task-container-items-priority" :class="{
@@ -129,12 +142,52 @@ function setPriority(priorityValue) {
   // &:active {
   //   background-color: darkblue;
   // }
+  // .task-container-title {
+  //   font-size: 20px;
+  //   color: rgba(255, 255, 255, 0.655);
+  //   text-align: start;
+  //   overflow: hidden;
+  //   max-width: 225px;
+  //   height:33px
+  // }
+  // .task-container-title {
+  //   font-size: 20px;
+  //   color: rgba(255, 255, 255, 0.655);
+  //   text-align: start;
+  //   overflow: hidden;
+  //   max-width: 225px;
+  //   height: 33px;
+  //   white-space: nowrap;
+  //   text-overflow: ellipsis;
+  //   // position: relative;
+  // }
+
+  // .task-container-title:hover {
+  //   animation: scrollText 5s linear infinite;
+  // }
   .task-container-title {
     font-size: 20px;
     color: rgba(255, 255, 255, 0.655);
     text-align: start;
+    overflow: hidden;
+    max-width: 225px;
+    height: 33px;
+    white-space: nowrap;
+    position: relative;
   }
 
+  .scroll-text {
+    display: inline-block;
+    white-space: nowrap;
+    transform: translateX(0);
+    transition: transform 1.5s ease-in;
+    max-width: 255px;
+  }
+
+  /* Al pasar el mouse, se desplaza el texto */
+.task-container-title:hover .scroll-text {
+  transform: translateX(calc(-100% + 225px)); /* Mueve el texto para mostrar el contenido oculto */
+}
   .task-container-items {
     display: flex;
     justify-content: space-between;
@@ -305,6 +358,17 @@ function setPriority(priorityValue) {
     margin: 0 0 0 0;
     max-width: 290px;
     height: 400px;
+  }
+}
+
+/* Animación que mueve el texto hacia la izquierda */
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
   }
 }
 </style>

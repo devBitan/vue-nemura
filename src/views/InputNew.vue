@@ -19,10 +19,10 @@ form(action="" @submit.prevent="handleSubmit")
 <style lang="scss" scoped>
 
 .inputTask{
-  padding: 10px;
+  padding: 10px 15px;
   border: none;
   border-radius: 10px;
-  min-width: 270px;
+  max-width: 270px;
 }
   
 </style>

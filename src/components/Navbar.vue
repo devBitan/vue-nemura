@@ -11,21 +11,21 @@
 
         </div>
         <h3>Projects</h3>
-        <form  action="" @submit.prevent="newProject(newProjectName)" @click="userStore.isExpanded = true" class="formProject">
+        <form  action="" @submit.prevent="newProject(newProjectName)" @click="ToggleMenu" class="formProject">
           <input class="inputProject" type="text" placeholder="New Project" v-model="newProjectName" >
         </form>
         <div class="menu" v-for="project in projects" :key="project.name">
             <div class="button" @click="projectSelected(project.id, project.name)" >
-                <span class="material-icons">spa</span>
-                <span class="text" >{{ project.name }}</span>
+                <span class="material-icons" @click="userStore.isExpanded = true">spa</span>
+                <span class="text" @click="ToggleMenu" >{{ project.name }} </span>
             </div>
             <button class="material-icons" @click="projectDelete(project.id)">delete</button>
 
         </div>
         <div class="flex"></div>
         <div class="menu">
-            <div class="button">
-                <span class="material-icons" @click="logout"  >logout</span>
+            <div class="button" @click="logout" >
+                <span class="material-icons" >logout</span>
                 <span class="text"> Logout</span>
                 
             </div>
@@ -70,7 +70,9 @@ const projectSelected = (id, name) => {
 const logout = async () => {
     console.log(userStore.user)
     userStore.user = null;
-    userStore.user = "";
+    userStore.isToken = null
+    userStore.idProject = null;
+    userStore.nameProject = null
     console.log(userStore.user)
     location.replace("/");
 };
@@ -80,16 +82,16 @@ const newProject = async () => {
     name: newProjectName.value,
     userId: idUser
   }
-  console.log(projectNew)
-  try {
-    let response = await postProject(projectNew);
-    console.log("Proyecto creado", response);
-    let responseProjects = await getProjectsByIdUser(idUser);
-    projects.value = responseProjects;
-    newProjectName.value = "";
-  } catch (error) {
-    console.error("Error al crear proyecto", error);
-    
+  if(projectNew.name !== ""){
+    try {
+      let response = await postProject(projectNew);
+      console.log("Proyecto creado", response);
+      let responseProjects = await getProjectsByIdUser(idUser);
+      projects.value = responseProjects;
+      newProjectName.value = "";
+    } catch (error) {
+      console.error("Error al crear proyecto", error);
+    }
   }
 }
 
@@ -135,9 +137,9 @@ aside {
     // flex-direction: column;
     align-items: center;
     gap: 1rem;
+    cursor: pointer;
     
     img {
-      cursor: pointer;
       width: 2.5rem;
       filter: invert(1);
     }
@@ -220,6 +222,10 @@ aside {
         color: var(--color-white-soft);
         transition: 0.3s ease-out;
       }
+      .text {
+        max-width: 120px;
+        overflow: hidden;
+      }
       &:hover {
         .material-icons {
           color: var(--color-verde);
@@ -284,6 +290,7 @@ aside {
   align-items: center;
   margin-bottom: 1rem;
   gap: .2rem;
+  opacity: .2;
   .inputProject {
     padding: 10px;
     border-radius: 12px;

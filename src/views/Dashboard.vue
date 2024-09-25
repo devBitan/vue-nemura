@@ -2,7 +2,7 @@
   main.dashboard
     Navbar
     form.dashboard-User
-      h3 Hi {{nameUser}}
+      h3 Hi {{nameUser}}! 
       div this page is for change your personal data 
       p Name
       input(
@@ -25,7 +25,7 @@
         v-model="nickUser"
       )
       br
-      button update
+      //- button update
      
 </template>
 
@@ -47,7 +47,8 @@ const nickUser = computed(() => userStore.user.nickName);
 </script>
 <style lang="scss" scoped>
 .dashboard-User {
-  background-color: #fff;
+  background-color: #1b2a47;
+  color: white;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(8, 8, 8, 0.432);
   width: 100%;
@@ -55,7 +56,7 @@ const nickUser = computed(() => userStore.user.nickName);
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: auto auto;
+  margin: 2rem auto;
   padding: 22px;
   text-align: center;
 

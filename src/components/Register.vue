@@ -105,10 +105,11 @@ const checkEmail = async () => {
 const validate = async () => {
   if (
     userCreate.value.nickName == "" ||
-    userCreate.value.nickName.length < 5 ||
+    userCreate.value.nickName.length < 2 ||
     userCreate.value.password == "" ||
     userCreate.value.password.length < 8
   ) {
+  console.log(useUserStore)
     alert("please enter the fields.");
     return;
   }
@@ -132,6 +133,7 @@ const validate = async () => {
 <style lang="scss" scoped>
 .register-seccion {
   //  display: flex;
+  padding: 3rem 0;
   width: 100vw;
   display: flex;
   justify-content: center;

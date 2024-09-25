@@ -11,7 +11,7 @@ import Task from '@/components/Task.vue';
     <Register class="registerC" />
     <div class="login-image">
       <div>
-        <h1>Nemura r</h1>
+        <h1>Nemura</h1>
         <span>Simple - practical - efficient.</span>
       </div>
       <img src="../assets/img/logoNemura.png" alt="logo-Nemura">
@@ -46,7 +46,7 @@ import Task from '@/components/Task.vue';
      height: 20vh;
      img {
       max-width: 130px;
-      margin-left: 16rem;
+      margin-left: 11em;
     };
    }
  

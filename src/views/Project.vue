@@ -37,7 +37,7 @@
     },
     {
       id: 2,
-      name: "In progres",
+      name: "In progress",
       enumValue: 1,
       items: [],
     },
@@ -62,12 +62,14 @@
       priority: 0,
       projectId: idProject.value,
     };
-    try {
-      let responseAddAssignment = await postAssignment(newAssignment);
-      let responseAssignment = await getAssignmentByProjectId(idProject.value);
-      assignments.value = responseAssignment;
-    } catch (error) {
-      console.error("Error creando la nueva tarea:", error);
+    if(newAssignment.name !== ""){
+      try {
+        let responseAddAssignment = await postAssignment(newAssignment);
+        let responseAssignment = await getAssignmentByProjectId(idProject.value);
+        assignments.value = responseAssignment;
+      } catch (error) {
+        console.error("Error creando la nueva tarea:", error);
+      }
     }
   }
   
