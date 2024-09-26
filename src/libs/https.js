@@ -35,7 +35,7 @@ export function httpService() {
   // POST function without headers, makes an HTTP POST request
   const httpPost = async (url, data) => {
     let response = await http.post(url, data); // Calls Axios' POST method with the data
-    return response.data; // Returns only the data from the response
+    return response; // Returns only the data from the response
   };
 
   // DELETE function without headers, makes an HTTP DELETE request
