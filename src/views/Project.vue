@@ -12,122 +12,139 @@
             :key="item?.id")
             Task(:item="item" :boardId="board.id" @delete-task="deleteItem(item.id)" @update-task="updateItem")
   </template>
-  
-  <script setup>
-  import { onMounted, reactive, ref, watchEffect, computed, onUpdated } from "vue";
-  import Navbar from '@/components/Navbar.vue';
-  import Task from '@/components/Task.vue';
-  import InputNew from "./InputNew.vue";
-  import { assignmentApi } from "@/assets/api/ApiAssigment";
-  import { projectsApi } from "@/assets/api/ApiProject";
-  import { useUserStore } from "@/stores/user";
-  
-  const userStore = useUserStore();
 
-  const { getAssignment, postAssignment, putAssignment, deleteAssignment, getAssignmentByProjectId,patchAssignment } = assignmentApi();
-  const idProject = computed(() => userStore.idProject);
-  const nameProject = computed(() => userStore.nameProject);
-  let assignments = ref([]);
-  let boards = reactive([
-    {
-      id: 1,
-      name: "To Do",
-      enumValue: 0,
-      items: [],
-    },
-    {
-      id: 2,
-      name: "In progress",
-      enumValue: 1,
-      items: [],
-    },
-    {
-      id: 3,
-      name: "Complete",
-      enumValue: 2,
-      items: [],
-    },
-  ]);
-  
-  watchEffect(async () => {
+<script setup>
+import { onMounted, reactive, ref, watchEffect, computed, onUpdated } from "vue";
+import Navbar from '@/components/Navbar.vue';
+import Task from '@/components/Task.vue';
+import InputNew from "./InputNew.vue";
+import { assignmentApi } from "@/assets/api/ApiAssigment";
+import { projectsApi } from "@/assets/api/ApiProject";
+import { useUserStore } from "@/stores/user";
+import Swal from 'sweetalert2';
+
+const userStore = useUserStore();
+
+const { getAssignment, postAssignment, putAssignment, deleteAssignment, getAssignmentByProjectId, patchAssignment } = assignmentApi();
+const idProject = computed(() => userStore.idProject);
+const nameProject = computed(() => userStore.nameProject);
+
+let assignments = ref([]);
+let boards = reactive([
+  {
+    id: 1,
+    name: "To Do",
+    enumValue: 0,
+    items: [],
+  },
+  {
+    id: 2,
+    name: "In progress",
+    enumValue: 1,
+    items: [],
+  },
+  {
+    id: 3,
+    name: "Complete",
+    enumValue: 2,
+    items: [],
+  },
+]);
+
+watchEffect(async () => {
+  let responseAssignment = await getAssignmentByProjectId(idProject.value);
+  assignments.value = responseAssignment;
+});
+
+async function handleNewItem(text) {
+  let newAssignment = {
+    name: text.value,
+    description: "",
+    status: 0,
+    priority: 0,
+    projectId: idProject.value,
+  };
+  if (newAssignment.name !== "") {
+    try {
+      let responseAddAssignment = await postAssignment(newAssignment);
+      Swal.fire({
+        icon: 'success',
+        title: 'Task Created!',
+        text: ':D.'
+      });
+      let responseAssignment = await getAssignmentByProjectId(idProject.value);
+      assignments.value = responseAssignment;
+    } catch (error) {
+      console.error("Error creando la nueva tarea:", error);
+    }
+  }
+}
+
+function startDrag(evt, board, item) {
+  evt.dataTransfer.setData(
+    "text/plain",
+    JSON.stringify({ boardId: board.id, itemId: item.id })
+  );
+}
+
+async function onDrop(evt, destBoard) {
+  const { boardId, itemId } = JSON.parse(evt.dataTransfer.getData("text/plain"));
+  const originItem = assignments.value.find((item) => item.id == itemId);
+  // Actualiza el status de la tarea al enum del board de destino
+  originItem.status = destBoard.enumValue;
+  let statusUpdate = {
+    status: destBoard.enumValue,
+  }
+
+  try {
+    // Actualiza la tarea en el backend
+    await patchAssignment(originItem.id, statusUpdate);
+    // Refresca la lista de tareas después de la actualización
     let responseAssignment = await getAssignmentByProjectId(idProject.value);
     assignments.value = responseAssignment;
-  });
-  
-  async function handleNewItem(text) {
-    let newAssignment = {
-      name: text.value,
-      description: "",
-      status: 0,
-      priority: 0,
-      projectId: idProject.value,
-    };
-    if(newAssignment.name !== ""){
-      try {
-        let responseAddAssignment = await postAssignment(newAssignment);
-        let responseAssignment = await getAssignmentByProjectId(idProject.value);
-        assignments.value = responseAssignment;
-      } catch (error) {
-        console.error("Error creando la nueva tarea:", error);
-      }
-    }
+  } catch (error) {
+    console.error("Error actualizando el estado de la tarea:", error);
   }
-  
-  function startDrag(evt, board, item) {
-    evt.dataTransfer.setData(
-      "text/plain",
-      JSON.stringify({ boardId: board.id, itemId: item.id })
-    );
-  }
-  
-  async function onDrop(evt, destBoard) {
-    const { boardId, itemId } = JSON.parse(evt.dataTransfer.getData("text/plain"));
-    const originItem = assignments.value.find((item) => item.id == itemId);
-    // Actualiza el status de la tarea al enum del board de destino
-    originItem.status = destBoard.enumValue;
-    let statusUpdate = {
-      status: destBoard.enumValue,
-    }
+}
 
-    try {
-      // Actualiza la tarea en el backend
-      await patchAssignment(originItem.id,statusUpdate);
+function filteredAssignments(board) {
+  return assignments.value.filter(
+    (assignment) => assignment.status === board.enumValue
+  );
+}
+
+async function deleteItem(item) {
+  console.log("el id es:", item);
+  // board.items = board.items.filter((i) => i !== item);
+  try {
+    let response = await deleteAssignment(item)
+    console.log("la respuesta de eliminar", response);
+    Swal.fire({
+      icon: 'success',
+      title: 'Task Deleted!',
+      text: 'OK.'
+    });
+    if (response) {
+
       // Refresca la lista de tareas después de la actualización
       let responseAssignment = await getAssignmentByProjectId(idProject.value);
       assignments.value = responseAssignment;
-    } catch (error) {
-      console.error("Error actualizando el estado de la tarea:", error);
     }
+  } catch (error) {
+    console.error("Error eliminando la tarea:", error);
   }
-  
-  function filteredAssignments(board) {
-    return assignments.value.filter(
-      (assignment) => assignment.status === board.enumValue
-    );
-  }
-  
-  async function deleteItem(item) {
-    console.log("el id es:", item);
-    // board.items = board.items.filter((i) => i !== item);
-    try {
-      let response = await deleteAssignment(item)
-      console.log("la respuesta de eliminar", response);
-      if(response){
-
-        // Refresca la lista de tareas después de la actualización
-      let responseAssignment = await getAssignmentByProjectId(idProject.value);
-      assignments.value = responseAssignment;
-      }
-    } catch (error) {
-      console.error("Error eliminando la tarea:", error);
-    }
 }
 
-async function updateItem(id,updatedAssignment) {
+async function updateItem(id, updatedAssignment) {
   console.log(updatedAssignment);
   try {
     let responseUpdate = await putAssignment(id, updatedAssignment);
     console.log(responseUpdate);
+    Swal.fire({
+      icon: 'success',
+      title: 'Task Updated!',
+      text: ':D.'
+    });
     let responseAssignment = await getAssignmentByProjectId(idProject.value);
     assignments.value = responseAssignment;
   } catch (error) {
@@ -144,7 +161,7 @@ async function updateItem(id,updatedAssignment) {
   /* border: 5px solid tomato; */
   min-height: 100vh;
   padding: .5rem;
-  
+
   .board-container {
     /* border: 2px solid rgb(29, 10, 7); */
     display: flex;
@@ -174,6 +191,7 @@ async function updateItem(id,updatedAssignment) {
     @media (max-width: 768px) {
       margin: 0 0 0 4rem;
       justify-content: center;
+
       /* background-color: red; */
       .board {
         max-width: 250px;

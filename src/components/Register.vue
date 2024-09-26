@@ -28,7 +28,7 @@
     )
     input(
         type="password",
-        placeholder="your pasword -One capital letter, one number",
+        placeholder="Minimum 8 characters, one uppercase, one number",
         v-model="userCreate.password",
         @change="checkPassword",
     )
@@ -41,7 +41,7 @@
     div
         button(
           type="submit",
-          v-show="userCreate.password != '' && userCreate.password.length >= 8",
+          v-show="passConfirm.length >= 8 && userCreate.password.length >= 8",
         ) Create user
     p if you already have an account,
     strong(@click="$router.push({ path: '/' })") please login.
@@ -53,6 +53,7 @@ import { useUserStore } from '@/stores/user'; //importar el store
 import { EMAIL_REGEX, PASSWORD_REGEX } from '@/libs/regex';
 import { authRegisterApi } from '@/assets/api/ApiAuth';
 import { useRouter } from "vue-router";
+import Swal from 'sweetalert2';
 
 const userStore = useUserStore(); // generar constante para usarlo
 const { register } = authRegisterApi();
@@ -116,7 +117,11 @@ const validate = async () => {
   let response = await register(userCreate.value);
   console.log(response)
   if (response) {
-    alert("User created!");
+    Swal.fire({
+      icon: 'success',
+      title: 'User Created!',
+      text: 'Welcome to the platform.'
+    });
     router.push("/");
   } else {
     userCreate.value.name = "";
@@ -124,7 +129,11 @@ const validate = async () => {
     userCreate.value.email = "";
     userCreate.value.nickName = "";
     userCreate.value.password = "";
-    alert("incorrect data");
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'There was an error creating your account. Please try again.'
+    });
   }
 
 };

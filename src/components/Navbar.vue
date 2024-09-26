@@ -1,42 +1,46 @@
 <template>
-    <aside :class="{'is-expanded': userStore.isExpanded}">
-        <div class="logo" @click="$router.push({ path: '/dashboard' })" >
-            <img src="../assets/img/logoNemura.png" alt="" >
-            <p> Hi! {{ nameUser }}</p>
-        </div>
-        <div class="menu-toggle-wrap">
-            <div class="menu-toggle" @click="ToggleMenu">
-                <span class="material-icons">keyboard_double_arrow_right</span>
-            </div>
+  <aside :class="{ 'is-expanded': userStore.isExpanded }">
+    <div class="logo" @click="$router.push({ path: '/dashboard' })">
+      <img src="../assets/img/logoNemura.png" alt="">
+      <p> Hi! {{ nameUser }}</p>
+    </div>
+    <div class="menu-toggle-wrap">
+      <div class="menu-toggle" @click="ToggleMenu">
+        <span class="material-icons">keyboard_double_arrow_right</span>
+      </div>
 
-        </div>
-        <h3>Projects</h3>
-        <form  action="" @submit.prevent="newProject(newProjectName)" @click="ToggleMenu" class="formProject">
-          <input class="inputProject" type="text" placeholder="New Project" v-model="newProjectName" >
-        </form>
-        <div class="menu" v-for="project in projects" :key="project.name">
-            <div class="button" @click="projectSelected(project.id, project.name)" >
-                <span class="material-icons" @click="userStore.isExpanded = true">spa</span>
-                <span class="text" @click="ToggleMenu" >{{ project.name }} </span>
-            </div>
-            <button class="material-icons" @click="projectDelete(project.id)">delete</button>
+    </div>
+    <h3>Projects</h3>
+    <form action="" @submit.prevent="newProject(newProjectName)" @click="userStore.isExpanded = true"
+      class="formProject">
+      <span class="material-icons"></span>
+      <input class="inputProject" type="text" placeholder="New Project" v-model="newProjectName">
 
-        </div>
-        <div class="flex"></div>
-        <div class="menu">
-            <div class="button" @click="logout" >
-                <span class="material-icons" >logout</span>
-                <span class="text"> Logout</span>
-                
-            </div>
-        </div>
-    </aside>
+    </form>
+
+    <div class="menu" v-for="project in projects" :key="project.name">
+      <div class="button">
+        <span class="material-icons" @click="userStore.isExpanded = true">spa</span>
+        <span class="text" @click="projectSelected(project.id, project.name)">{{ project.name }} </span>
+      </div>
+      <button class="material-icons" @click="projectDelete(project.id)">delete</button>
+    </div>
+    <div class="flex"></div>
+    <div class="menu">
+      <div class="button" @click="logout">
+        <span class="material-icons">logout</span>
+        <span class="text"> Logout</span>
+
+      </div>
+    </div>
+  </aside>
 </template>
 <script setup>
 import { onMounted, ref, computed } from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import { projectsApi } from '@/assets/api/ApiProject';
 import { useUserStore } from '@/stores/user';
+import Swal from 'sweetalert2';
 
 const userStore = useUserStore()
 const router = useRouter();
@@ -49,10 +53,10 @@ onMounted(async () => {
   // nameUser = userStore.user.name;
   let responseProjects = await getProjectsByIdUser(idUser);
   projects.value = responseProjects;
-  console.log("porjectos del user:",projects.value);
+  console.log("porjectos del user:", projects.value);
 })
 
-let idUser= ref();
+let idUser = ref();
 // let nameUser = ref();
 const projects = ref([])
 let newProjectName = ref("")
@@ -64,17 +68,18 @@ const ToggleMenu = () => {
 const projectSelected = (id, name) => {
   router.push({ path: "/dashboard/" + `${name}` });
   userStore.idProject = id;
-  userStore.nameProject= name;
+  userStore.nameProject = name;
+  ToggleMenu();
 }
 
 const logout = async () => {
-    console.log(userStore.user)
-    userStore.user = null;
-    userStore.isToken = null
-    userStore.idProject = null;
-    userStore.nameProject = null
-    console.log(userStore.user)
-    location.replace("/");
+  console.log(userStore.user)
+  userStore.user = null;
+  userStore.isToken = null
+  userStore.idProject = null;
+  userStore.nameProject = null
+  console.log(userStore.user)
+  location.replace("/");
 };
 
 const newProject = async () => {
@@ -82,13 +87,18 @@ const newProject = async () => {
     name: newProjectName.value,
     userId: idUser
   }
-  if(projectNew.name !== ""){
+  if (projectNew.name !== "") {
     try {
       let response = await postProject(projectNew);
       console.log("Proyecto creado", response);
       let responseProjects = await getProjectsByIdUser(idUser);
       projects.value = responseProjects;
       newProjectName.value = "";
+      Swal.fire({
+      icon: 'success',
+      title: 'Project Created!',
+      text: ':D'
+    });
     } catch (error) {
       console.error("Error al crear proyecto", error);
     }
@@ -96,19 +106,24 @@ const newProject = async () => {
 }
 
 async function projectDelete(projectId) {
-    console.log(projectId);
-    try {
-      let response = await deleteProject(projectId)
-      console.log(response);
-      if(response){
+  console.log(projectId);
+  try {
+    let response = await deleteProject(projectId)
+    Swal.fire({
+      icon: 'success',
+      title: 'Project Deleted!',
+      text: 'OK.'
+    });
+    console.log(response);
+    if (response) {
 
-        // Refresca la lista de projectos después de la actualización
-        let responseProjects = await getProjectsByIdUser(idUser);
-        projects.value = responseProjects;
-      }
-    } catch (error) {
-      console.error("Error eliminando la tarea:", error);
+      // Refresca la lista de projectos después de la actualización
+      let responseProjects = await getProjectsByIdUser(idUser);
+      projects.value = responseProjects;
     }
+  } catch (error) {
+    console.error("Error eliminando la tarea:", error);
+  }
 }
 </script>
 
@@ -120,13 +135,14 @@ aside {
   width: calc(2rem + 36px);
   min-height: 100vh;
   overflow: hidden;
-  background-color: #1b2a47; /* Un color oscuro para contraste */
+  background-color: #1b2a47;
+  /* Un color oscuro para contraste */
   color: var(--color-white-soft);
   padding: 1rem;
   transition: 0.2s ease-out;
   border-right: 3px solid rgba(255, 255, 255, 0.1);
 
-  .flex{
+  .flex {
     flex: 1 1 0;
   }
 
@@ -138,7 +154,7 @@ aside {
     align-items: center;
     gap: 1rem;
     cursor: pointer;
-    
+
     img {
       width: 2.5rem;
       filter: invert(1);
@@ -182,29 +198,38 @@ aside {
     opacity: 0;
     transition: 0.3s ease-out;
   }
+
   h3 {
     color: var(--color-verde);
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
   }
+
+  .scroll {
+    overflow: hidden;
+
+  }
+
   .menu {
     margin: 0 -.9rem;
     display: flex;
     padding: 5px;
     justify-content: space-between;
     cursor: pointer !important;
+
     button {
       border: none;
       padding: 0 5px;
       border-radius: 9px;
       margin: 6px 0;
-      background-color: #1b2a47; 
-      color:white;
+      background-color: #1b2a47;
+      color: white;
+
       &:hover {
-          color: var(--color-naranja);
-          transform:scale(1rem);
-          background-color: var(--color-blue);
+        color: var(--color-naranja);
+        transform: scale(1rem);
+        background-color: var(--color-blue);
 
       }
 
@@ -222,30 +247,36 @@ aside {
         color: var(--color-white-soft);
         transition: 0.3s ease-out;
       }
+
       .text {
         max-width: 120px;
         overflow: hidden;
       }
+
       &:hover {
         .material-icons {
           color: var(--color-verde);
           transform: translateX(0.5rem);
 
-      }
+        }
       }
 
       .text {
         color: var(--color-white-soft);
         transition: 0.3s ease-out;
       }
-      &:hover ~&.router-link-exact-active{
+
+      &:hover~&.router-link-exact-active {
         background-color: var(--color-azulito);
         transition: 0.3s ease-out;
-        .material-icons, .text {
+
+        .material-icons,
+        .text {
           color: var(--color-verde);
         }
 
       }
+
       &.router-link-exact-active {
         border-right: 5px solid var(--color-verde);
       }
@@ -266,15 +297,16 @@ aside {
     }
 
     h3,
-    .button .text  {
+    .button .text {
       opacity: 1;
 
     }
+
     .button {
       .material-icons {
         margin-right: 1rem;
       }
-     
+
     }
   }
 
@@ -285,18 +317,18 @@ aside {
   }
 }
 
-.formProject{
+.formProject {
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
   gap: .2rem;
   opacity: .2;
+
   .inputProject {
     padding: 10px;
     border-radius: 12px;
     border: none;
-    
+
   }
 }
-    
 </style>>

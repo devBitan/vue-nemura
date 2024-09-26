@@ -35,6 +35,7 @@ import { useRouter } from "vue-router";
 const userStore = useUserStore(); // generar constante para usarlo
 const { login } = authRegisterApi();
 const router = useRouter();
+import Swal from 'sweetalert2';
 
 let userConfirm = ref({
   nickName: "",
@@ -91,9 +92,18 @@ const validate = async () => {
       // enviando información a la store
       userStore.setUser(response);
       userStore.setToken(response.token)
+      Swal.fire({
+      icon: 'success',
+      title: 'User Logined!',
+      text: 'Welcome to the platform.'
+    });
       router.push("/dashboard");
     } else {
-      alert("usuario o pass incorrecto.");
+      Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'There was an error logging in your account. Please try again.'
+    });
       userConfirm.value.nickName = "";
       userConfirm.value.password = "";
     }
