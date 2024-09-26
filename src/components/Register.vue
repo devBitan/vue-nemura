@@ -111,11 +111,16 @@ const validate = async () => {
     userCreate.value.password.length < 8
   ) {
   console.log(useUserStore)
-    alert("please enter the fields.");
+  Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: 'please enter the fields..'
+    });
     return;
   }
   let response = await register(userCreate.value);
   console.log(response)
+  
   if (response) {
     Swal.fire({
       icon: 'success',
